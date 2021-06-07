@@ -507,14 +507,7 @@ impl Board {
     fn get_valid_moves(&self, piece:&Piece) -> Vec<(u32, u32)> {
         let mut coords:Vec<(u32, u32)> = Vec::new();
 
-        coords.push((piece.rank, piece.file)); // a piece can usually stay on the same square I guess...
-        // TODO: king can't stay on the same square if it's in check
-        // actally, nobody can move unless they're blocking check
-
-
-        coords.push((4, 5)); // added for testing purposes
-
-        // must include move validity such as moving into/away from check
+        // if the king is in check, nobody else can move unless they're blocking check or attacker is eliminated
         // also must eliminate exposing king to check
 
         match piece.kind {
@@ -535,10 +528,10 @@ impl Board {
                     let capture_square_1 = (piece.rank - 1, piece.file - 1);
                     let capture_square_2 = (piece.rank - 1, piece.file + 1);
 
-                    if self.find_piece_by_coords(one_space.0, one_space.1) == None { coords.push(one_space); }
-                    if piece.rank == 7 && self.find_piece_by_coords(two_space.0, two_space.1) == None { coords.push(two_space); }
-                    if self.find_piece_by_coords(capture_square_1.0, capture_square_1.1) != None { coords.push(capture_square_1); }
-                    if self.find_piece_by_coords(capture_square_2.0, capture_square_2.1) != None { coords.push(capture_square_2); }
+                    if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1) == None { coords.push(one_space); }
+                    if Board::valid_square(two_space) && piece.rank == 7 && self.find_piece_by_coords(two_space.0, two_space.1) == None { coords.push(two_space); }
+                    if Board::valid_square(capture_square_1) && self.find_piece_by_coords(capture_square_1.0, capture_square_1.1) != None { coords.push(capture_square_1); }
+                    if Board::valid_square(capture_square_2) && self.find_piece_by_coords(capture_square_2.0, capture_square_2.1) != None { coords.push(capture_square_2); }
                 }
             },
             _ => {
@@ -551,7 +544,7 @@ impl Board {
 
     fn valid_square(coord:(u32,u32)) -> bool {
         if coord.0 > 8 || coord.0 < 1 { return false }
-        if coord.1 > 8 || coord.0 < 1 { return false }
+        if coord.1 > 8 || coord.1 < 1 { return false }
 
         return true;
     }
@@ -590,9 +583,9 @@ impl Board {
         // single out the first field, the position section
         let mut position_section = &mut fields[0];
         let mut ranks = position_section.split('/').collect::<Vec<&str>>();
+        
 
-
-
+        
         // actually make the move here. Don't forget to increment the halfmove and full move counters (fields[4] and fields[5] respectively)
         
 
