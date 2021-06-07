@@ -366,37 +366,49 @@ impl Board {
                     'p' => {
                         file += 1;
                         counts[0] += 1;
-                        pieces[counts[0]].rank = rank;
-                        pieces[counts[0]].file = file;
+                        pieces[counts[0] - 1].rank = rank;
+                        pieces[counts[0] - 1].file = file;
+
+                        // println!("Placed {} pawn #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[0], rank, file);
                     },
                     'r' => {
                         file += 1;
                         counts[1] += 1;
-                        pieces[8 + counts[1]].rank = rank;
-                        pieces[8 + counts[1]].file = file;
+                        pieces[8 + counts[1] - 1].rank = rank;
+                        pieces[8 + counts[1] - 1].file = file;
+                        
+                        // println!("Placed {} rook #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[1], rank, file);
                     },
                     'n' => {
                         file += 1;
                         counts[2] += 1;
-                        pieces[10 + counts[2]].rank = rank;
-                        pieces[10 + counts[2]].file = file;
+                        pieces[10 + counts[2] - 1].rank = rank;
+                        pieces[10 + counts[2] - 1].file = file;
+                        
+                        // println!("Placed {} knight #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[2], rank, file);
                     },
                     'b' => {
                         file += 1;
                         counts[3] += 1;
-                        pieces[12 + counts[3]].rank = rank;
-                        pieces[12 + counts[3]].file = file;
+                        pieces[12 + counts[3] - 1].rank = rank;
+                        pieces[12 + counts[3] - 1].file = file;
+                        
+                        // println!("Placed {} bishop #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[3], rank, file);
                     },
                     'q' => {
                         file += 1;
                         counts[4] += 1;
                         pieces[14].rank = rank;
                         pieces[14].file = file;
+                        
+                        // println!("Placed {} queen #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[4], rank, file);
                     },
                     'k' => {
                         file += 1;
                         pieces[15].rank = rank;
                         pieces[15].file = file;
+                        
+                        // println!("Placed {} king at rank {} and file {}", if white { "white" } else { "black" }, rank, file);
                     }
                     ' ' => break, // space indicates the end of the position section
                     _ => continue
@@ -508,8 +520,6 @@ impl Board {
         match piece.kind {
             PieceType::Pawn { val: 1 } => {
                 if piece.color == Color::White {
-                    println!("RANK {} AND FILE {}", piece.rank, piece.file);
-
                     let one_space = (piece.rank + 1, piece.file);
                     let two_space = (piece.rank + 2, piece.file);
                     let capture_square_1 = (piece.rank + 1, piece.file - 1);
@@ -580,6 +590,10 @@ impl Board {
         // single out the first field, the position section
         let mut position_section = &mut fields[0];
         let mut ranks = position_section.split('/').collect::<Vec<&str>>();
+
+
+
+        // actually make the move here. Don't forget to increment the halfmove and full move counters (fields[4] and fields[5] respectively)
         
 
     
@@ -593,5 +607,16 @@ impl Board {
         self.set_fen(fen);
 
         return true;
+    }
+
+    fn get_side_to_move(&self) -> Color {
+        // break up FEN into six whitespace-delimited sections
+        let fields = self.fen.split_whitespace().collect::<Vec<&str>>();
+
+        if fields[1] == "w" {
+            return Color::White;
+        } else {
+            return Color::Black;
+        }
     }
 }

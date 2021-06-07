@@ -34,6 +34,14 @@ mod tests {
         assert_eq!(board.get_white_pieces()[15].get_position(), (1, 5));
         println!("true");
 
+        print!("Checking if e2 pawn is in correct position... ");
+        assert_eq!(board.get_white_pieces()[4].get_position(), (2, 5));
+        println!("true");
+
+        print!("Checking if e7 pawn is in correct position... ");
+        assert_eq!(board.get_black_pieces()[4].get_position(), (7, 5));
+        println!("true");
+
         print!("\n\n");
     }
 
@@ -45,8 +53,9 @@ mod tests {
 
         // make move 1. e4
         print!("Checking if pawn move is successful... ");
+        let pawn = &board.get_white_pieces()[0];
 
-        let mv = board.make_move(&board.get_white_pieces()[0], 4, 5);
+        let mv = board.make_move(pawn, 4, 5);
         assert!(mv);
 
         println!("true");
