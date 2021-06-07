@@ -642,11 +642,11 @@ impl Board {
 
     // // takes in rank/file coordinates, and returns the optional tuple (white:boolean, index:u32)
     pub fn find_piece_by_coords(&self, rank:u32, file:u32) -> Option<&Piece> {
-        for (i, p) in self.white_pieces.iter().enumerate() {
+        for p in self.white_pieces.iter() {
             if p.rank == rank && p.file == file { return Some(p); }
         }
 
-        for (i, p) in self.black_pieces.iter().enumerate() {
+        for p in self.black_pieces.iter() {
             if p.rank == rank && p.file == file { return Some(p); }
         }
 

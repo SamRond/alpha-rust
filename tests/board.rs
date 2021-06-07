@@ -1,5 +1,4 @@
 use alpha_rust::Board;
-use alpha_rust::Coordinates;
 
 mod utils;
 
@@ -49,7 +48,7 @@ mod tests {
 
     #[test]
     fn test_board_init_with_fen() {
-        let mut board = crate::init("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2".to_string());
+        let board = crate::init("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2".to_string());
 
         print!("Checking if FEN is set to correct value... ");
         assert_eq!(board.get_fen(), "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
