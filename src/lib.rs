@@ -8,16 +8,18 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+#[wasm_bindgen]
 #[derive(Clone, PartialEq)]
 pub enum PieceType {
-    Pawn {val: i8},
-    Knight {val: i8},
-    Bishop {val: i8},
-    Rook {val: i8},
-    Queen {val: i8},
-    King {val: i8}
+    Pawn,
+    Knight,
+    Bishop,
+    Rook,
+    Queen,
+    King
 }
 
+#[wasm_bindgen]
 #[derive(Clone, PartialEq)]
 pub enum Color {
     White,
@@ -33,10 +35,95 @@ pub struct Piece {
     file: u32
 }
 
+#[wasm_bindgen]
 impl Piece {
     // gets tuple of (rank, file)
-    pub fn get_position(&self) -> (u32, u32) {
-        (self.rank, self.file)
+    pub fn get_position(&self) -> Coordinates {
+        Coordinates {
+            rank: self.rank,
+            file: self.file
+        }
+    }
+}
+
+#[wasm_bindgen]
+#[derive(PartialEq, Debug)]
+pub struct Coordinates {
+    pub rank: u32,
+    pub file: u32
+}
+
+#[wasm_bindgen]
+pub struct BoardSingleton {
+    board: Board
+}
+
+#[wasm_bindgen]
+impl BoardSingleton {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> BoardSingleton {
+        let singleton = BoardSingleton {
+            board: Board::new("".to_string())
+        };
+
+        return singleton;
+    }
+
+    pub fn set_fen(&mut self, fen: &str) {
+        self.board.set_fen(fen.to_string());
+    }
+
+    pub fn get_board_string(&self) -> String {
+        let mut string = "<table><tbody>".to_string();
+        let mut char = ' ';
+    
+        for i in (1..9).rev() {
+            string += "<tr>";
+    
+            for j in 1..9 {
+                match self.board.find_piece_by_coords(i, j) {
+                    Some(x) => {
+                        match x.kind {
+                            PieceType::Pawn => {
+                                char = 'p';
+                            },
+                            PieceType::Rook => {
+                                char = 'r';
+                            },
+                            PieceType::Knight => {
+                                char = 'n';
+                            },
+                            PieceType::Bishop => {
+                                char = 'b';
+                            }
+                            PieceType::Queen => {
+                                char = 'q';
+                            },
+                            PieceType::King => {
+                                char = 'k';
+                            },
+                        }
+    
+                        if x.color == Color::White {
+                            char = char.to_ascii_uppercase();
+                        }
+                    },
+                    None => {
+                        char = '+';
+                    }
+                }
+    
+                string += "<td>";
+                string.push(char);
+                string += "</td>";
+            }
+    
+            string += "</tr>";
+        }
+    
+        string += "</tbody></table>";
+    
+        return string;
     }
 }
 
@@ -57,7 +144,8 @@ impl Board {
     }
 
     pub fn set_fen(&mut self, fen_in: String) {
-        self.fen = fen_in
+        self.fen = fen_in;
+        self.set_piece_coords()
     }
 
     // mostly exists for testing; returns a cloned vec of the white pieces
@@ -102,97 +190,97 @@ impl Board {
         let mut white_pieces = Vec::with_capacity(16); 
 
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Rook { val: 5 },
+            kind: PieceType::Rook,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Rook { val: 5 },
+            kind: PieceType::Rook,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Knight { val: 3 },
+            kind: PieceType::Knight,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Knight { val: 3 },
+            kind: PieceType::Knight,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Bishop { val: 3 },
+            kind: PieceType::Bishop,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Bishop { val: 3 },
+            kind: PieceType::Bishop,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::Queen { val: 9 },
+            kind: PieceType::Queen,
             color: Color::White,
             rank: 0,
             file: 0
         });
         white_pieces.push(Piece {
-            kind: PieceType::King { val: 127 },
+            kind: PieceType::King,
             color: Color::White,
             rank: 0,
             file: 0
@@ -213,97 +301,97 @@ impl Board {
         let mut black_pieces = Vec::with_capacity(16); 
 
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Pawn { val: 1 },
+            kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Rook { val: 5 },
+            kind: PieceType::Rook,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Rook { val: 5 },
+            kind: PieceType::Rook,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Knight { val: 3 },
+            kind: PieceType::Knight,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Knight { val: 3 },
+            kind: PieceType::Knight,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Bishop { val: 3 },
+            kind: PieceType::Bishop,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Bishop { val: 3 },
+            kind: PieceType::Bishop,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::Queen { val: 9 },
+            kind: PieceType::Queen,
             color: Color::Black,
             rank: 0,
             file: 0
         });
         black_pieces.push(Piece {
-            kind: PieceType::King { val: 127 },
+            kind: PieceType::King,
             color: Color::Black,
             rank: 0,
             file: 0
@@ -512,32 +600,34 @@ impl Board {
         // also must eliminate exposing king to check
 
         match piece.kind {
-            PieceType::Pawn { val: 1 } => {
+            PieceType::Pawn => {
                 if piece.color == Color::White {
                     let one_space = (piece.rank + 1, piece.file);
                     let two_space = (piece.rank + 2, piece.file);
                     let capture_square_1 = (piece.rank + 1, piece.file - 1);
                     let capture_square_2 = (piece.rank + 1, piece.file + 1);
 
-                    if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1) == None { coords.push(one_space); }
-                    if Board::valid_square(two_space) && piece.rank == 2 && self.find_piece_by_coords(two_space.0, two_space.1) == None { coords.push(two_space); }
-                    if Board::valid_square(capture_square_1) && self.find_piece_by_coords(capture_square_1.0, capture_square_1.1) != None { coords.push(capture_square_1); }
-                    if Board::valid_square(capture_square_2) && self.find_piece_by_coords(capture_square_2.0, capture_square_2.1) != None { coords.push(capture_square_2); }
+                    if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1).is_none() { coords.push(one_space); }
+                    if Board::valid_square(two_space) && piece.rank == 2 && self.find_piece_by_coords(two_space.0, two_space.1).is_none() { coords.push(two_space); }
+                    if Board::valid_square(capture_square_1) && !self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).is_none() { coords.push(capture_square_1); }
+                    if Board::valid_square(capture_square_2) && !self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).is_none() { coords.push(capture_square_2); }
                 } else {
                     let one_space = (piece.rank - 1, piece.file);
                     let two_space = (piece.rank - 2, piece.file);
                     let capture_square_1 = (piece.rank - 1, piece.file - 1);
                     let capture_square_2 = (piece.rank - 1, piece.file + 1);
 
-                    if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1) == None { coords.push(one_space); }
-                    if Board::valid_square(two_space) && piece.rank == 7 && self.find_piece_by_coords(two_space.0, two_space.1) == None { coords.push(two_space); }
-                    if Board::valid_square(capture_square_1) && self.find_piece_by_coords(capture_square_1.0, capture_square_1.1) != None { coords.push(capture_square_1); }
-                    if Board::valid_square(capture_square_2) && self.find_piece_by_coords(capture_square_2.0, capture_square_2.1) != None { coords.push(capture_square_2); }
+                    if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1).is_none() { coords.push(one_space); }
+                    if Board::valid_square(two_space) && piece.rank == 7 && self.find_piece_by_coords(two_space.0, two_space.1).is_none() { coords.push(two_space); }
+                    if Board::valid_square(capture_square_1) && !self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).is_none() { coords.push(capture_square_1); }
+                    if Board::valid_square(capture_square_2) && !self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).is_none() { coords.push(capture_square_2); }
                 }
             },
-            _ => {
-
-            }
+            PieceType::Knight => todo!(),
+            PieceType::Bishop => todo!(),
+            PieceType::Rook => todo!(),
+            PieceType::Queen => todo!(),
+            PieceType::King => todo!(),
         }
 
         return coords;
@@ -550,14 +640,14 @@ impl Board {
         return true;
     }
 
-    // takes in rank/file coordinates, and returns the optional tuple (white:boolean, index:u32)
-    pub fn find_piece_by_coords(&self, rank:u32, file:u32) -> Option<(bool, u32)> {
+    // // takes in rank/file coordinates, and returns the optional tuple (white:boolean, index:u32)
+    pub fn find_piece_by_coords(&self, rank:u32, file:u32) -> Option<&Piece> {
         for (i, p) in self.white_pieces.iter().enumerate() {
-            if p.rank == rank && p.file == file { return Some((true, i as u32)); }
+            if p.rank == rank && p.file == file { return Some(p); }
         }
 
         for (i, p) in self.black_pieces.iter().enumerate() {
-            if p.rank == rank && p.file == file { return Some((false, i as u32)); }
+            if p.rank == rank && p.file == file { return Some(p); }
         }
 
         return None;

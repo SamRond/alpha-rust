@@ -1,0 +1,12 @@
+body {
+    height: 100vh;
+}
+
+td {
+    padding-left: 10px;
+    padding-right: 10px;
+
+    border: 1px solid; 
+    width: 2em; 
+    height: 2em;
+}

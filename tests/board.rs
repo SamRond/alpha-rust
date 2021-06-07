@@ -1,4 +1,5 @@
 use alpha_rust::Board;
+use alpha_rust::Coordinates;
 
 mod utils;
 
@@ -28,19 +29,19 @@ mod tests {
         println!("true");
 
         print!("Checking if black king is in correct position... ");
-        assert_eq!(board.get_black_pieces()[15].get_position(), (8, 5));
+        assert_eq!(board.get_black_pieces()[15].get_position(), alpha_rust::Coordinates { rank: 8, file: 5});
         println!("true");
 
         print!("Checking if white king is in correct position... ");
-        assert_eq!(board.get_white_pieces()[15].get_position(), (1, 5));
+        assert_eq!(board.get_white_pieces()[15].get_position(), alpha_rust::Coordinates { rank: 1, file: 5});
         println!("true");
 
         print!("Checking if e2 pawn is in correct position... ");
-        assert_eq!(board.get_white_pieces()[4].get_position(), (2, 5));
+        assert_eq!(board.get_white_pieces()[4].get_position(), alpha_rust::Coordinates { rank: 2, file: 5});
         println!("true");
 
         print!("Checking if e7 pawn is in correct position... ");
-        assert_eq!(board.get_black_pieces()[4].get_position(), (7, 5));
+        assert_eq!(board.get_black_pieces()[4].get_position(), alpha_rust::Coordinates { rank: 7, file: 5});
         println!("true");
 
         print!("\n\n");
@@ -55,15 +56,15 @@ mod tests {
         println!("true");
 
         print!("Checking if white e pawn is in correct position... ");
-        assert_eq!(board.get_white_pieces()[0].get_position(), (4, 5));
+        assert_eq!(board.get_white_pieces()[0].get_position(), alpha_rust::Coordinates { rank: 4, file: 5});
         println!("true");
 
         print!("Checking if black c pawn is in correct position... ");
-        assert_eq!(board.get_black_pieces()[7].get_position(), (5, 3));
+        assert_eq!(board.get_black_pieces()[7].get_position(), alpha_rust::Coordinates { rank: 5, file: 3});
         println!("true");
 
         print!("Checking if white knight is in correct position... ");
-        assert_eq!(board.get_white_pieces()[10].get_position(), (3, 6));
+        assert_eq!(board.get_white_pieces()[10].get_position(), alpha_rust::Coordinates { rank: 3, file: 6});
         println!("true");
     }
 
