@@ -505,6 +505,9 @@ impl Board {
     fn get_valid_moves(&self, piece:&Piece) -> Vec<(u32, u32)> {
         let mut coords:Vec<(u32, u32)> = Vec::new();
 
+        // if piece is not on the board, it has no valid moves
+        if piece.rank == 0 || piece.file == 0 { return coords; }
+
         // if the king is in check, nobody else can move unless they're blocking check or attacker is eliminated
         // also must eliminate exposing king to check
 

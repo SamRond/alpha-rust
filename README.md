@@ -1,3 +1,8 @@
+## Important Commands
+
+### Run Tests (one at a time)
+`cargo test -- --test-threads=1`
+
 <div align="center">
 
   <h1><code>wasm-pack-template</code></h1>
@@ -31,15 +36,6 @@ templates and usages of `wasm-pack`.
 [template-docs]: https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html
 
 ## 🚴 Usage
-
-### 🐑 Use `cargo generate` to Clone this Template
-
-[Learn more about `cargo generate` here.](https://github.com/ashleygwilliams/cargo-generate)
-
-```
-cargo generate --git https://github.com/rustwasm/wasm-pack-template.git --name my-project
-cd my-project
-```
 
 ### 🛠️ Build with `wasm-pack build`
 
