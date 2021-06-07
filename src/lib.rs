@@ -1,5 +1,3 @@
-mod utils;
-
 use core::str;
 
 use wasm_bindgen::prelude::*;
@@ -319,7 +317,7 @@ impl Board {
         let mut rank = 8;
         let mut file = 0;
         
-        let mut white = true;
+        let mut white:bool;
 
         // keeps track of the number of each piece that has been seen so far
         // [pawns, rooks, knights, bishops, queen]
@@ -428,7 +426,7 @@ impl Board {
         
         // black pawns
         if black_piece_counts[0] < 8 {
-            for i in black_piece_counts[0]..9 {
+            for _ in black_piece_counts[0]..9 {
                 self.black_pieces[black_piece_counts[0]].rank = 0;
                 self.black_pieces[black_piece_counts[0]].file = 0;
             }
@@ -436,7 +434,7 @@ impl Board {
 
         // white pawns
         if white_piece_counts[0] < 8 {
-            for i in white_piece_counts[0]..9 {
+            for _ in white_piece_counts[0]..9 {
                 self.white_pieces[white_piece_counts[0]].rank = 0;
                 self.white_pieces[white_piece_counts[0]].file = 0;
             }
@@ -444,7 +442,7 @@ impl Board {
 
         // black rooks
         if black_piece_counts[1] < 2 {
-            for i in black_piece_counts[1]..3 {
+            for _ in black_piece_counts[1]..3 {
                 self.black_pieces[8 + black_piece_counts[1]].rank = 0;
                 self.black_pieces[8 + black_piece_counts[1]].file = 0;
             }
@@ -452,7 +450,7 @@ impl Board {
 
         // white rooks
         if white_piece_counts[1] < 2 {
-            for i in white_piece_counts[1]..3 {
+            for _ in white_piece_counts[1]..3 {
                 self.white_pieces[8 + white_piece_counts[1]].rank = 0;
                 self.white_pieces[8 + white_piece_counts[1]].file = 0;
             }
@@ -460,7 +458,7 @@ impl Board {
 
         // black knights
         if black_piece_counts[2] < 2 {
-            for i in black_piece_counts[1]..3 {
+            for _ in black_piece_counts[1]..3 {
                 self.black_pieces[10 + black_piece_counts[2]].rank = 0;
                 self.black_pieces[10 + black_piece_counts[2]].file = 0;
             }
@@ -468,7 +466,7 @@ impl Board {
 
         // white knights
         if white_piece_counts[2] < 2 {
-            for i in white_piece_counts[1]..3 {
+            for _ in white_piece_counts[1]..3 {
                 self.white_pieces[10 + white_piece_counts[2]].rank = 0;
                 self.white_pieces[10 + white_piece_counts[2]].file = 0;
             }
@@ -476,7 +474,7 @@ impl Board {
 
         // black bishops
         if black_piece_counts[3] < 2 {
-            for i in black_piece_counts[1]..3 {
+            for _ in black_piece_counts[1]..3 {
                 self.black_pieces[12 + black_piece_counts[3]].rank = 0;
                 self.black_pieces[12 + black_piece_counts[3]].file = 0;
             }
@@ -484,7 +482,7 @@ impl Board {
 
         // white bishops
         if white_piece_counts[3] < 2 {
-            for i in white_piece_counts[1]..3 {
+            for _ in white_piece_counts[1]..3 {
                 self.white_pieces[12 + white_piece_counts[3]].rank = 0;
                 self.white_pieces[12 + white_piece_counts[3]].file = 0;
             }
