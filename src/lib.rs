@@ -9,7 +9,7 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum PieceType {
     Pawn,
     Knight,
@@ -20,14 +20,14 @@ pub enum PieceType {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Color {
     White,
     Black
 }
 
 #[wasm_bindgen]
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Piece {
     kind: PieceType,
     color: Color,
@@ -128,6 +128,7 @@ impl BoardSingleton {
 }
 
 #[wasm_bindgen]
+#[derive(Clone)]
 pub struct Board {
     fen: String,
 
