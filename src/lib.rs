@@ -31,8 +31,8 @@ pub enum Color {
 pub struct Piece {
     kind: PieceType,
     color: Color,
-    rank: u32,
-    file: u32
+    rank: i32,
+    file: i32
 }
 
 #[wasm_bindgen]
@@ -49,8 +49,8 @@ impl Piece {
 #[wasm_bindgen]
 #[derive(PartialEq, Debug)]
 pub struct Coordinates {
-    pub rank: u32,
-    pub file: u32
+    pub rank: i32,
+    pub file: i32
 }
 
 #[wasm_bindgen]
@@ -402,8 +402,8 @@ impl Board {
 
     // Iterates through the FEN and properly sets the coordinates of each piece
     fn set_piece_coords(&mut self) {
-        let mut rank = 8;
-        let mut file = 0;
+        let mut rank: i32 = 8;
+        let mut file: i32 = 0;
         
         let mut white:bool;
 
@@ -433,7 +433,7 @@ impl Board {
                 // convert the char to an integer and add it to 'file'
                 file += match ch.to_digit(10) {
                     None => 0,
-                    Some(x) => x, // x is now an integer value
+                    Some(x) => x as i32, // x is now an integer value
                 };
             } else {
                 // index positions of pieces in arr of pieces
@@ -590,8 +590,8 @@ impl Board {
     }
 
     // given a piece, return a vec of all valid squares for it
-    fn get_valid_moves(&self, piece:&Piece) -> Vec<(u32, u32)> {
-        let mut coords:Vec<(u32, u32)> = Vec::new();
+    fn get_valid_moves(&self, piece:&Piece) -> Vec<(i32, i32)> {
+        let mut coords:Vec<(i32, i32)> = Vec::new();
 
         // if piece is not on the board, it has no valid moves
         if piece.rank == 0 || piece.file == 0 { return coords; }
@@ -633,15 +633,15 @@ impl Board {
         return coords;
     }
 
-    fn valid_square(coord:(u32,u32)) -> bool {
+    fn valid_square(coord:(i32,i32)) -> bool {
         if coord.0 > 8 || coord.0 < 1 { return false }
         if coord.1 > 8 || coord.1 < 1 { return false }
 
         return true;
     }
 
-    // // takes in rank/file coordinates, and returns the optional tuple (white:boolean, index:u32)
-    pub fn find_piece_by_coords(&self, rank:u32, file:u32) -> Option<&Piece> {
+    // // takes in rank/file coordinates, and returns the optional tuple (white:boolean, index:i32)
+    pub fn find_piece_by_coords(&self, rank:i32, file:i32) -> Option<&Piece> {
         for p in self.white_pieces.iter() {
             if p.rank == rank && p.file == file { return Some(p); }
         }
@@ -656,7 +656,7 @@ impl Board {
     // moves a given piece to the specified rank/file
     // eliminates any pieces that exist there, and updates the FEN
     // returns true if move is successfully made
-    pub fn make_move(&mut self, piece:&Piece, rank:u32, file:u32) -> bool {
+    pub fn make_move(&mut self, piece:&Piece, rank:i32, file:i32) -> bool {
         // check that given rank/file are in the list of valid moves
         // if not, return false
         let moves = self.get_valid_moves(piece);
@@ -670,7 +670,6 @@ impl Board {
         if !(self.get_side_to_move() == piece.color) {
             return false;
         }
-
         // single out the first field, the position section
         let mut position_section = &mut fields[0];
         let mut ranks = position_section.split('/').collect::<Vec<&str>>();
