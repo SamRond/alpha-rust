@@ -1,5 +1,6 @@
 mod utils;
 
+
 #[cfg(test)]
 mod tests {
     use alpha_rust::Board;
@@ -85,10 +86,28 @@ mod tests {
         print!("\n\n");
 
         // make move 1. e4
-        print!("Checking if pawn move is successful... ");
+        print!("Checking if pawn move 1. e4 is successful... ");
         let pawn = &board.get_white_pieces()[4];
 
         let mv = board.make_move(pawn, 4, 5);
+        assert!(mv);
+        assert_eq!(board.get_white_pieces()[4].get_position(), alpha_rust::Coordinates { rank: 4, file: 5});
+        println!("true");
+    }
+
+    #[test]
+    fn test_knight_move() {
+        let mut board = Board::new("".to_string());
+
+        print!("\n\n");
+
+        // make move 1. Nf3
+        print!("Checking if knight move is successful... ");
+
+        
+        let knight = &board.get_white_pieces()[11];
+
+        let mv = board.make_move(knight, 3, 6);
         assert!(mv);
 
         let res = board.find_piece_by_coords(4, 5).unwrap();

@@ -668,7 +668,7 @@ impl Board {
         
         // check if the correct side is trying to move
         // if not, return false
-        if !((fields[1] == "w" && piece.color == Color::White) || (fields[1] == "b" && piece.color == Color::Black)) {
+        if !(self.get_side_to_move() == piece.color) {
             return false;
         }
 
