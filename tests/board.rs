@@ -91,7 +91,7 @@ mod tests {
 
         let mv = board.make_move(pawn, 4, 5);
         assert!(mv);
-        assert_eq!(board.get_white_pieces()[4].get_position(), alpha_rust::Coordinates { rank: 4, file: 5});
+        assert_eq!(board.find_piece_by_coords(4, 5).unwrap(), pawn);
         println!("true");
     }
 

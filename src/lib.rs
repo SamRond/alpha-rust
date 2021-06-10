@@ -27,7 +27,7 @@ pub enum Color {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Piece {
     kind: PieceType,
     color: Color,
