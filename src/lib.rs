@@ -602,27 +602,21 @@ impl Board {
 
         match piece.kind {
             PieceType::Pawn => {
+                let team;
                 if piece.color == Color::White {
-                    let one_space = (piece.rank + 1, piece.file);
-                    let two_space = (piece.rank + 2, piece.file);
-                    let capture_square_1 = (piece.rank + 1, piece.file - 1);
-                    let capture_square_2 = (piece.rank + 1, piece.file + 1);
-
-                    if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1).is_none() { coords.push(one_space); }
-                    if Board::valid_square(two_space) && piece.rank == 2 && self.find_piece_by_coords(two_space.0, two_space.1).is_none() { coords.push(two_space); }
-                    if Board::valid_square(capture_square_1) && !self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).is_none() { coords.push(capture_square_1); }
-                    if Board::valid_square(capture_square_2) && !self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).is_none() { coords.push(capture_square_2); }
+                    team = 1;
                 } else {
-                    let one_space = (piece.rank - 1, piece.file);
-                    let two_space = (piece.rank - 2, piece.file);
-                    let capture_square_1 = (piece.rank - 1, piece.file - 1);
-                    let capture_square_2 = (piece.rank - 1, piece.file + 1);
-
-                    if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1).is_none() { coords.push(one_space); }
-                    if Board::valid_square(two_space) && piece.rank == 7 && self.find_piece_by_coords(two_space.0, two_space.1).is_none() { coords.push(two_space); }
-                    if Board::valid_square(capture_square_1) && !self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).is_none() { coords.push(capture_square_1); }
-                    if Board::valid_square(capture_square_2) && !self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).is_none() { coords.push(capture_square_2); }
+                    team = -1;
                 }
+                let one_space = (piece.rank + team, piece.file);
+                let two_space = (piece.rank + 2 * team, piece.file);
+                let capture_square_1 = (piece.rank + team, piece.file - 1);
+                let capture_square_2 = (piece.rank + team, piece.file + 1);
+
+                if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1).is_none() { coords.push(one_space); }
+                if Board::valid_square(two_space) && piece.rank == (4.5 - 2.5 * (team as f64)) as i32 && self.find_piece_by_coords(one_space.0, one_space.1).is_none() && self.find_piece_by_coords(two_space.0, two_space.1).is_none() { coords.push(two_space); }
+                if Board::valid_square(capture_square_1) && !self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).is_none() && self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).unwrap().color != piece.color { coords.push(capture_square_1); }
+                if Board::valid_square(capture_square_2) && !self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).is_none() && self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).unwrap().color != piece.color { coords.push(capture_square_2); }
             },
             PieceType::Knight => todo!(),
             PieceType::Bishop => todo!(),

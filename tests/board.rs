@@ -110,12 +110,30 @@ mod tests {
         let mv = board.make_move(knight, 3, 6);
         assert!(mv);
 
-        let res = board.find_piece_by_coords(4, 5).unwrap();
+        let res = board.find_piece_by_coords(3, 6).unwrap();
 
         assert_eq!(res.get_position(), board.get_white_pieces()[4].get_position());
 
         println!("true");
 
         print!("\n\n");
+    }
+
+    #[test]
+    fn test_for_in_check() {
+        let mut board = Board::new("".to_string());
+
+        print!("\n\n");
+
+        //make moves 1. e4 f5 2. Qh5+
+        let w_pawn = &board.get_white_pieces()[4];
+        board.make_move(w_pawn, 4, 5);
+        let b_pawn = &board.get_black_pieces()[5];
+        board.make_move(b_pawn, 5, 6);
+        let w_queen = &board.get_white_pieces()[14];
+        board.make_move(w_queen, 5, 8);
+
+        //check if board state includes checks
+        //assert!(board.in_check());
     }
 }
