@@ -602,23 +602,41 @@ impl Board {
 
         match piece.kind {
             PieceType::Pawn => {
+                // team indicates pawn direction; pawns can only move forward and therefore movement is team dependent
+                // white moves up the board, therefore direction is positive
                 let team;
                 if piece.color == Color::White {
                     team = 1;
                 } else {
                     team = -1;
                 }
+
+                // each var represents a possible movement of the pawn
                 let one_space = (piece.rank + team, piece.file);
                 let two_space = (piece.rank + 2 * team, piece.file);
                 let capture_square_1 = (piece.rank + team, piece.file - 1);
                 let capture_square_2 = (piece.rank + team, piece.file + 1);
 
+                // for pawn movements, forward squares must be clear, must be on second or seventh rank for double movement, and diagonal squares must be occupied by enemy pieces for a move to be valid
                 if Board::valid_square(one_space) && self.find_piece_by_coords(one_space.0, one_space.1).is_none() { coords.push(one_space); }
                 if Board::valid_square(two_space) && piece.rank == (4.5 - 2.5 * (team as f64)) as i32 && self.find_piece_by_coords(one_space.0, one_space.1).is_none() && self.find_piece_by_coords(two_space.0, two_space.1).is_none() { coords.push(two_space); }
                 if Board::valid_square(capture_square_1) && !self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).is_none() && self.find_piece_by_coords(capture_square_1.0, capture_square_1.1).unwrap().color != piece.color { coords.push(capture_square_1); }
                 if Board::valid_square(capture_square_2) && !self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).is_none() && self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).unwrap().color != piece.color { coords.push(capture_square_2); }
             },
-            PieceType::Knight => todo!(),
+            PieceType::Knight => {
+                for x in -2..2 {
+                    for y in -2..2 {
+                        // when x is +/- 1       and y is +/- 2,        OR   x is +/- 2          and y is +/- 1,             and the target square is valid
+                        if (((x == 1 || x == -1) && (y == 2 || y == -2)) || ((x == 2 || x == -2) && (y == 1 || y == -1))) && Board::valid_square((piece.rank + x, piece.file + y)) {
+                            let same_team = match self.find_piece_by_coords(piece.rank + x, piece.rank + y) {
+                                Some(x) => x.color == piece.color, // when the target square is not occupied by a same-color piece
+                                None => false,
+                            };
+                            if !same_team {coords.push((piece.rank + x, piece.file + y))} // add to coords
+                        }
+                    }
+                }
+            },
             PieceType::Bishop => todo!(),
             PieceType::Rook => todo!(),
             PieceType::Queen => todo!(),
