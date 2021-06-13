@@ -58,6 +58,10 @@ pub struct BoardSingleton {
     board: Board
 }
 
+// mostly exists as a wrapper class so Javascript can interact with the board
+//
+// complex values (vec, arr, etc.) cannot be passed directly to javascript, 
+// so no methods in this struct can use them directly as params or return values
 #[wasm_bindgen]
 impl BoardSingleton {
     #[wasm_bindgen(constructor)]
@@ -133,10 +137,10 @@ pub struct Board {
     fen: String,
 
     // White pieces
-    white_pieces: Vec<Piece>,
+    white_pieces: [Vec<Piece>; 6],
 
     // Black pieces
-    black_pieces: Vec<Piece>
+    black_pieces: [Vec<Piece>; 6]
 }
 
 impl Board {
@@ -150,12 +154,12 @@ impl Board {
     }
 
     // mostly exists for testing; returns a cloned vec of the white pieces
-    pub fn get_white_pieces(&self) -> Vec<Piece> {
+    pub fn get_white_pieces(&self) -> [Vec<Piece>; 6] {
         self.white_pieces.clone()
     }
 
     // mostly exists for testing; returns a cloned vec of the white pieces
-    pub fn get_black_pieces(&self) -> Vec<Piece> {
+    pub fn get_black_pieces(&self) -> [Vec<Piece>; 6] {
         self.black_pieces.clone()
     }
 
@@ -179,108 +183,115 @@ impl Board {
         return ret;
     }
 
-    // Fills array of white pieces
+    // Fills 2d array of white pieces
     //
-    // 0 - 7: pawns
-    // 8 - 9: rooks
-    // 10 - 11: knights
-    // 12 - 13: bishops
-    // 14: queen
-    // 15: king
-    fn init_white_pieces() -> Vec<Piece> {
-        let mut white_pieces = Vec::with_capacity(16); 
+    // 0: pawns
+    // 1: knights
+    // 2: bishops
+    // 3: rooks
+    // 4: queens
+    // 5: kings
+    fn init_white_pieces() -> [Vec<Piece>; 6] {
+        let mut white_pieces = [
+            Vec::with_capacity(8), // max number of pawns is 8
+            Vec::with_capacity(10), // max number of knights, bishops, and rooks is 10 (2 on board + 8 promotions)
+            Vec::with_capacity(10),
+            Vec::with_capacity(10),
+            Vec::with_capacity(9), // max number of queens on the board (1 on board + 8 promotions)
+            Vec::with_capacity(1), // max number of kings on the board
+        ]; 
 
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[3].push(Piece {
             kind: PieceType::Rook,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[3].push(Piece {
             kind: PieceType::Rook,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[1].push(Piece {
             kind: PieceType::Knight,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[1].push(Piece {
             kind: PieceType::Knight,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[2].push(Piece {
             kind: PieceType::Bishop,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[2].push(Piece {
             kind: PieceType::Bishop,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[4].push(Piece {
             kind: PieceType::Queen,
             color: Color::White,
             rank: 0,
             file: 0
         });
-        white_pieces.push(Piece {
+        white_pieces[5].push(Piece {
             kind: PieceType::King,
             color: Color::White,
             rank: 0,
@@ -290,108 +301,115 @@ impl Board {
         white_pieces
     }
 
-    // Fills array of black pieces
+    // Fills 2d array of black pieces
     //
-    // 0 - 7: pawns
-    // 8 - 9: rooks
-    // 10 - 11: knights
-    // 12 - 13: bishops
-    // 14: queen
-    // 15: king
-    fn init_black_pieces() -> Vec<Piece> {
-        let mut black_pieces = Vec::with_capacity(16); 
+    // 0: pawns
+    // 1: knights
+    // 2: bishops
+    // 3: rooks
+    // 4: queens
+    // 5: kings
+    fn init_black_pieces() -> [Vec<Piece>; 6] {
+        let mut black_pieces = [
+            Vec::with_capacity(8), // max number of pawns is 8
+            Vec::with_capacity(10), // max number of knights, bishops, and rooks is 10 (2 on board + 8 promotions)
+            Vec::with_capacity(10),
+            Vec::with_capacity(10),
+            Vec::with_capacity(9), // max number of queens on the board (1 on board + 8 promotions)
+            Vec::with_capacity(1), // max number of kings on the board
+        ]; 
 
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[0].push(Piece {
             kind: PieceType::Pawn,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[3].push(Piece {
             kind: PieceType::Rook,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[3].push(Piece {
             kind: PieceType::Rook,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[1].push(Piece {
             kind: PieceType::Knight,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[1].push(Piece {
             kind: PieceType::Knight,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[2].push(Piece {
             kind: PieceType::Bishop,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[2].push(Piece {
             kind: PieceType::Bishop,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[4].push(Piece {
             kind: PieceType::Queen,
             color: Color::Black,
             rank: 0,
             file: 0
         });
-        black_pieces.push(Piece {
+        black_pieces[5].push(Piece {
             kind: PieceType::King,
             color: Color::Black,
             rank: 0,
@@ -408,10 +426,22 @@ impl Board {
         
         let mut white:bool;
 
-        // keeps track of the number of each piece that has been seen so far
-        // [pawns, rooks, knights, bishops, queen]
+        // keeps track of the number of each piece in the array of pieces, and subtracts for this number for each one that has been seen
+        // [pawns, knights, bishops, rooks, queen]
         let mut white_piece_counts = [0, 0, 0, 0, 0];
         let mut black_piece_counts = [0, 0, 0, 0, 0];
+
+        // populate count arrays
+        self.count_pieces(&self.white_pieces, &mut white_piece_counts);
+        self.count_pieces(&self.black_pieces, &mut black_piece_counts);
+
+        // indexes in 2d array of pieces
+        // 0: pawns
+        // 1: knights
+        // 2: bishops
+        // 3: rooks
+        // 4: queens
+        // 5: kings
 
         for ch in self.fen.chars() {
             white = ch.is_ascii_uppercase();
@@ -438,12 +468,7 @@ impl Board {
                 };
             } else {
                 // index positions of pieces in arr of pieces
-                // 0 - 7: pawns
-                // 8 - 9: rooks
-                // 10 - 11: knights
-                // 12 - 13: bishops
-                // 14: queen
-                // 15: king
+        
 
                 match ch.to_ascii_lowercase() {
                     '/' => {
@@ -451,49 +476,54 @@ impl Board {
                         file = 0;
                     },
                     'p' => {
+                        let index = pieces[0].len() - counts[0];
                         file += 1;
-                        counts[0] += 1;
-                        pieces[counts[0] - 1].rank = rank;
-                        pieces[counts[0] - 1].file = file;
+                        counts[0] -= 1;
+                        pieces[0][index].rank = rank;
+                        pieces[0][index].file = file;
 
                         // println!("Placed {} pawn #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[0], rank, file);
                     },
-                    'r' => {
-                        file += 1;
-                        counts[1] += 1;
-                        pieces[8 + counts[1] - 1].rank = rank;
-                        pieces[8 + counts[1] - 1].file = file;
-                        
-                        // println!("Placed {} rook #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[1], rank, file);
-                    },
                     'n' => {
+                        let index = pieces[1].len() - counts[1];
                         file += 1;
-                        counts[2] += 1;
-                        pieces[10 + counts[2] - 1].rank = rank;
-                        pieces[10 + counts[2] - 1].file = file;
+                        counts[1] -= 1;
+                        pieces[1][index].rank = rank;
+                        pieces[1][index].file = file;
                         
                         // println!("Placed {} knight #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[2], rank, file);
                     },
                     'b' => {
+                        let index = pieces[2].len() - counts[2];
                         file += 1;
-                        counts[3] += 1;
-                        pieces[12 + counts[3] - 1].rank = rank;
-                        pieces[12 + counts[3] - 1].file = file;
+                        counts[2] -= 1;
+                        pieces[2][index].rank = rank;
+                        pieces[2][index].file = file;
                         
                         // println!("Placed {} bishop #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[3], rank, file);
                     },
-                    'q' => {
+                    'r' => {
+                        let index = pieces[3].len() - counts[3];
                         file += 1;
-                        counts[4] += 1;
-                        pieces[14].rank = rank;
-                        pieces[14].file = file;
+                        counts[3] -= 1;
+                        pieces[3][index].rank = rank;
+                        pieces[3][index].file = file;
+                        
+                        // println!("Placed {} rook #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[1], rank, file);
+                    },
+                    'q' => {
+                        let index = pieces[4].len() - counts[4];
+                        file += 1;
+                        counts[4] -= 1;
+                        pieces[4][index].rank = rank;
+                        pieces[4][index].file = file;
                         
                         // println!("Placed {} queen #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[4], rank, file);
                     },
                     'k' => {
                         file += 1;
-                        pieces[15].rank = rank;
-                        pieces[15].file = file;
+                        pieces[5][0].rank = rank;
+                        pieces[5][0].file = file;
                         
                         // println!("Placed {} king at rank {} and file {}", if white { "white" } else { "black" }, rank, file);
                     }
@@ -504,89 +534,34 @@ impl Board {
         }
 
         // index positions of pieces in arr of pieces
-        // 0 - 7: pawns
-        // 8 - 9: rooks
-        // 10 - 11: knights
-        // 12 - 13: bishops
-        // 14: queen
-        // 15: king
+        // 0: pawns
+        // 1: knights
+        // 2: bishops
+        // 3: rooks
+        // 4: queens
+        // 5: kings
 
         // update missing pieces to have rank/file of 0 (lost)
         
-        // black pawns
-        if black_piece_counts[0] < 8 {
-            for _ in black_piece_counts[0]..9 {
-                self.black_pieces[black_piece_counts[0]].rank = 0;
-                self.black_pieces[black_piece_counts[0]].file = 0;
+        for i in 0..5 {
+            while black_piece_counts[i] > 0 {
+                let index = self.black_pieces[i].len() - black_piece_counts[i];
+                self.black_pieces[i][index].rank = 0;
+                self.black_pieces[i][index].file = 0;
+            }
+
+            while white_piece_counts[i] > 0 {
+                let index = self.white_pieces[i].len() - white_piece_counts[i];
+                self.white_pieces[i][index].rank = 0;
+                self.white_pieces[i][index].file = 0;
             }
         }
+    }
 
-        // white pawns
-        if white_piece_counts[0] < 8 {
-            for _ in white_piece_counts[0]..9 {
-                self.white_pieces[white_piece_counts[0]].rank = 0;
-                self.white_pieces[white_piece_counts[0]].file = 0;
-            }
-        }
-
-        // black rooks
-        if black_piece_counts[1] < 2 {
-            for _ in black_piece_counts[1]..3 {
-                self.black_pieces[8 + black_piece_counts[1]].rank = 0;
-                self.black_pieces[8 + black_piece_counts[1]].file = 0;
-            }
-        }
-
-        // white rooks
-        if white_piece_counts[1] < 2 {
-            for _ in white_piece_counts[1]..3 {
-                self.white_pieces[8 + white_piece_counts[1]].rank = 0;
-                self.white_pieces[8 + white_piece_counts[1]].file = 0;
-            }
-        }
-
-        // black knights
-        if black_piece_counts[2] < 2 {
-            for _ in black_piece_counts[1]..3 {
-                self.black_pieces[10 + black_piece_counts[2]].rank = 0;
-                self.black_pieces[10 + black_piece_counts[2]].file = 0;
-            }
-        }
-
-        // white knights
-        if white_piece_counts[2] < 2 {
-            for _ in white_piece_counts[1]..3 {
-                self.white_pieces[10 + white_piece_counts[2]].rank = 0;
-                self.white_pieces[10 + white_piece_counts[2]].file = 0;
-            }
-        }
-
-        // black bishops
-        if black_piece_counts[3] < 2 {
-            for _ in black_piece_counts[1]..3 {
-                self.black_pieces[12 + black_piece_counts[3]].rank = 0;
-                self.black_pieces[12 + black_piece_counts[3]].file = 0;
-            }
-        }
-
-        // white bishops
-        if white_piece_counts[3] < 2 {
-            for _ in white_piece_counts[1]..3 {
-                self.white_pieces[12 + white_piece_counts[3]].rank = 0;
-                self.white_pieces[12 + white_piece_counts[3]].file = 0;
-            }
-        }
-
-        // black queen
-        if black_piece_counts[4] == 0 {
-            self.black_pieces[14].rank = 0;
-            self.black_pieces[14].file = 0;
-        }
-
-        // white queen
-        if white_piece_counts[4] == 0 {
-            self.white_pieces[14].rank = 0;
-            self.white_pieces[14].file = 0;
+    // counts array indexes: [pawns, rooks, knights, bishops, queen]
+    fn count_pieces(&self, pieces:&[Vec<Piece>; 6], counts:&mut [usize; 5]) {
+        for i in 0..5 {
+            counts[i] = pieces[i].len();
         }
     }
 
@@ -655,12 +630,14 @@ impl Board {
 
     // // takes in rank/file coordinates, and returns the optional tuple (white:boolean, index:i32)
     pub fn find_piece_by_coords(&self, rank:i32, file:i32) -> Option<&Piece> {
-        for p in self.white_pieces.iter() {
-            if p.rank == rank && p.file == file { return Some(p); }
-        }
-
-        for p in self.black_pieces.iter() {
-            if p.rank == rank && p.file == file { return Some(p); }
+        for i in 0..6 {
+            for p in self.white_pieces[i].iter() {
+                if p.rank == rank && p.file == file { return Some(p); }
+            }
+    
+            for p in self.black_pieces[i].iter() {
+                if p.rank == rank && p.file == file { return Some(p); }
+            }
         }
 
         return None;
@@ -714,5 +691,10 @@ impl Board {
         } else {
             return Color::Black;
         }
+    }
+
+    fn get_castle_ability(color:Color, ) -> bool {
+        
+        return true;
     }
 }

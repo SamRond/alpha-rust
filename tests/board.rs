@@ -28,27 +28,37 @@ mod tests {
         println!("true");
 
         print!("Checking if white pieces are correctly initialized... ");
-        assert_eq!(board.get_white_pieces().len(), 16);
+        assert_eq!(board.get_white_pieces()[0].len(), 8); // 8 pawns
+        assert_eq!(board.get_white_pieces()[1].len(), 2);
+        assert_eq!(board.get_white_pieces()[2].len(), 2);
+        assert_eq!(board.get_white_pieces()[3].len(), 2);
+        assert_eq!(board.get_white_pieces()[4].len(), 1);
+        assert_eq!(board.get_white_pieces()[5].len(), 1);
         println!("true");
 
         print!("Checking if black pieces are correctly initialized... ");
-        assert_eq!(board.get_black_pieces().len(), 16);
+        assert_eq!(board.get_black_pieces()[0].len(), 8); // 8 pawns
+        assert_eq!(board.get_black_pieces()[1].len(), 2);
+        assert_eq!(board.get_black_pieces()[2].len(), 2);
+        assert_eq!(board.get_black_pieces()[3].len(), 2);
+        assert_eq!(board.get_black_pieces()[4].len(), 1);
+        assert_eq!(board.get_black_pieces()[5].len(), 1);
         println!("true");
 
         print!("Checking if black king is in correct position... ");
-        assert_eq!(board.get_black_pieces()[15].get_position(), alpha_rust::Coordinates { rank: 8, file: 5});
+        assert_eq!(board.get_black_pieces()[5][0].get_position(), alpha_rust::Coordinates { rank: 8, file: 5});
         println!("true");
 
         print!("Checking if white king is in correct position... ");
-        assert_eq!(board.get_white_pieces()[15].get_position(), alpha_rust::Coordinates { rank: 1, file: 5});
+        assert_eq!(board.get_white_pieces()[5][0].get_position(), alpha_rust::Coordinates { rank: 1, file: 5});
         println!("true");
 
         print!("Checking if e2 pawn is in correct position... ");
-        assert_eq!(board.get_white_pieces()[4].get_position(), alpha_rust::Coordinates { rank: 2, file: 5});
+        assert_eq!(board.get_white_pieces()[0][4].get_position(), alpha_rust::Coordinates { rank: 2, file: 5});
         println!("true");
 
         print!("Checking if e7 pawn is in correct position... ");
-        assert_eq!(board.get_black_pieces()[4].get_position(), alpha_rust::Coordinates { rank: 7, file: 5});
+        assert_eq!(board.get_black_pieces()[0][4].get_position(), alpha_rust::Coordinates { rank: 7, file: 5});
         println!("true");
 
         print!("\n\n");
@@ -65,15 +75,15 @@ mod tests {
         println!("true");
 
         print!("Checking if white e pawn is in correct position... ");
-        assert_eq!(board.get_white_pieces()[0].get_position(), alpha_rust::Coordinates { rank: 4, file: 5});
+        assert_eq!(board.get_white_pieces()[0][0].get_position(), alpha_rust::Coordinates { rank: 4, file: 5});
         println!("true");
 
         print!("Checking if black c pawn is in correct position... ");
-        assert_eq!(board.get_black_pieces()[7].get_position(), alpha_rust::Coordinates { rank: 5, file: 3});
+        assert_eq!(board.get_black_pieces()[0][7].get_position(), alpha_rust::Coordinates { rank: 5, file: 3});
         println!("true");
 
         print!("Checking if white knight is in correct position... ");
-        assert_eq!(board.get_white_pieces()[10].get_position(), alpha_rust::Coordinates { rank: 3, file: 6});
+        assert_eq!(board.get_white_pieces()[1][0].get_position(), alpha_rust::Coordinates { rank: 3, file: 6});
         println!("true");
     }
 
@@ -87,7 +97,7 @@ mod tests {
 
         // make move 1. e4
         print!("Checking if pawn move 1. e4 is successful... ");
-        let pawn = &board.get_white_pieces()[4];
+        let pawn = &board.get_white_pieces()[0][4];
 
         let mv = board.make_move(pawn, 4, 5);
         assert!(mv);
@@ -105,14 +115,14 @@ mod tests {
         print!("Checking if knight move is successful... ");
 
         
-        let knight = &board.get_white_pieces()[11];
+        let knight = &board.get_white_pieces()[1][2];
 
         let mv = board.make_move(knight, 3, 6);
         assert!(mv);
 
         let res = board.find_piece_by_coords(3, 6).unwrap();
 
-        assert_eq!(res.get_position(), board.get_white_pieces()[4].get_position());
+        assert_eq!(res.get_position(), board.get_white_pieces()[0][4].get_position());
 
         println!("true");
 
@@ -126,11 +136,11 @@ mod tests {
         print!("\n\n");
 
         //make moves 1. e4 f5 2. Qh5+
-        let w_pawn = &board.get_white_pieces()[4];
+        let w_pawn = &board.get_white_pieces()[0][4];
         board.make_move(w_pawn, 4, 5);
-        let b_pawn = &board.get_black_pieces()[5];
+        let b_pawn = &board.get_black_pieces()[0][5];
         board.make_move(b_pawn, 5, 6);
-        let w_queen = &board.get_white_pieces()[14];
+        let w_queen = &board.get_white_pieces()[4][0];
         board.make_move(w_queen, 5, 8);
 
         //check if board state includes checks
