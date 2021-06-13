@@ -87,6 +87,38 @@ mod tests {
         println!("true");
     }
 
+    // rnbqkbnr/pp1ppqpp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2
+    #[test]
+    fn test_board_init_with_two_queens() {
+        init();
+        
+        let board = Board::new("rnbqkbnr/pp1ppqpp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2".to_string());
+
+        print!("Checking if FEN is set to correct value... ");
+        assert_eq!(board.get_fen(), "rnbqkbnr/pp1ppqpp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
+        println!("true");
+
+        print!("Checking if white a pawn is in correct position... ");
+        assert_eq!(board.get_white_pieces()[0][0].get_position(), alpha_rust::Coordinates { rank: 4, file: 5});
+        println!("true");
+
+        print!("Checking if black h pawn is in correct position... ");
+        assert_eq!(board.get_black_pieces()[0][6].get_position(), alpha_rust::Coordinates { rank: 5, file: 3});
+        println!("true");
+
+        print!("Checking if white knight is in correct position... ");
+        assert_eq!(board.get_white_pieces()[1][0].get_position(), alpha_rust::Coordinates { rank: 3, file: 6});
+        println!("true");
+
+        print!("Checking if first black queen is in correct position... ");
+        assert_eq!(board.get_black_pieces()[4][0].get_position(), alpha_rust::Coordinates { rank: 8, file: 4});
+        println!("true");
+
+        print!("Checking if second black queen is in correct position... ");
+        assert_eq!(board.get_black_pieces()[4][1].get_position(), alpha_rust::Coordinates { rank: 7, file: 6});
+        println!("true");
+    }
+
     #[test]
     fn test_pawn_move() {
         init();

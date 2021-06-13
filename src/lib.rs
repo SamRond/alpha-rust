@@ -9,7 +9,7 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum PieceType {
     Pawn,
     Knight,
@@ -431,7 +431,7 @@ impl Board {
         let mut white_piece_counts = [0, 0, 0, 0, 0];
         let mut black_piece_counts = [0, 0, 0, 0, 0];
 
-        // populate count arrays
+        // populate count arrays 
         self.count_pieces(&self.white_pieces, &mut white_piece_counts);
         self.count_pieces(&self.black_pieces, &mut black_piece_counts);
 
@@ -450,10 +450,10 @@ impl Board {
             let counts;
             
             if white {
-                pieces = &mut self.white_pieces;
+                pieces = &mut (self.white_pieces);
                 counts = &mut white_piece_counts;
             } else {
-                pieces = &mut self.black_pieces;
+                pieces = &mut (self.black_pieces);
                 counts = &mut black_piece_counts;
             };
 
@@ -469,6 +469,7 @@ impl Board {
             } else {
                 // index positions of pieces in arr of pieces
         
+                file += 1; // all match arms except '/' do this
 
                 match ch.to_ascii_lowercase() {
                     '/' => {
@@ -476,56 +477,23 @@ impl Board {
                         file = 0;
                     },
                     'p' => {
-                        let index = pieces[0].len() - counts[0];
-                        file += 1;
-                        counts[0] -= 1;
-                        pieces[0][index].rank = rank;
-                        pieces[0][index].file = file;
-
-                        // println!("Placed {} pawn #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[0], rank, file);
+                        Board::update_piece_coordinates(pieces, counts, 0, white, rank, file);
                     },
                     'n' => {
-                        let index = pieces[1].len() - counts[1];
-                        file += 1;
-                        counts[1] -= 1;
-                        pieces[1][index].rank = rank;
-                        pieces[1][index].file = file;
-                        
-                        // println!("Placed {} knight #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[2], rank, file);
+                        Board::update_piece_coordinates(pieces, counts, 1, white, rank, file);
                     },
                     'b' => {
-                        let index = pieces[2].len() - counts[2];
-                        file += 1;
-                        counts[2] -= 1;
-                        pieces[2][index].rank = rank;
-                        pieces[2][index].file = file;
-                        
-                        // println!("Placed {} bishop #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[3], rank, file);
+                        Board::update_piece_coordinates(pieces, counts, 2, white, rank, file);
                     },
                     'r' => {
-                        let index = pieces[3].len() - counts[3];
-                        file += 1;
-                        counts[3] -= 1;
-                        pieces[3][index].rank = rank;
-                        pieces[3][index].file = file;
-                        
-                        // println!("Placed {} rook #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[1], rank, file);
+                        Board::update_piece_coordinates(pieces, counts, 3, white, rank, file);
                     },
                     'q' => {
-                        let index = pieces[4].len() - counts[4];
-                        file += 1;
-                        counts[4] -= 1;
-                        pieces[4][index].rank = rank;
-                        pieces[4][index].file = file;
-                        
-                        // println!("Placed {} queen #{} at rank {} and file {}", if white { "white" } else { "black" }, counts[4], rank, file);
+                        Board::update_piece_coordinates(pieces, counts, 4, white, rank, file);
                     },
                     'k' => {
-                        file += 1;
                         pieces[5][0].rank = rank;
                         pieces[5][0].file = file;
-                        
-                        // println!("Placed {} king at rank {} and file {}", if white { "white" } else { "black" }, rank, file);
                     }
                     ' ' => break, // space indicates the end of the position section
                     _ => continue
@@ -548,14 +516,44 @@ impl Board {
                 let index = self.black_pieces[i].len() - black_piece_counts[i];
                 self.black_pieces[i][index].rank = 0;
                 self.black_pieces[i][index].file = 0;
+
+                black_piece_counts[i] -= 1;
             }
 
             while white_piece_counts[i] > 0 {
                 let index = self.white_pieces[i].len() - white_piece_counts[i];
                 self.white_pieces[i][index].rank = 0;
                 self.white_pieces[i][index].file = 0;
+
+                white_piece_counts[i] -= 1;
             }
         }
+    }
+
+    fn update_piece_coordinates(pieces:&mut [Vec<Piece>; 6], counts:&mut [usize; 5], index:usize, white:bool, rank:i32, file:i32) {
+        if counts[index] == 0 {
+            let kind = pieces[index][0].kind.clone();
+
+            let mut piece = Piece {
+                kind,
+                color: Color::Black,
+                rank: 0,
+                file: 0
+            };
+
+            if white { piece.color = Color::White }
+
+
+            pieces[index].push(piece);
+            counts[index] += 1;
+
+            println!("Added new piece of type: {:?}", kind);
+        }
+
+        let index2 = pieces[index].len() - counts[index];
+        counts[index] -= 1;
+        pieces[index][index2].rank = rank;
+        pieces[index][index2].file = file;
     }
 
     // counts array indexes: [pawns, rooks, knights, bishops, queen]
