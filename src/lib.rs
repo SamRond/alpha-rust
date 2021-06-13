@@ -530,6 +530,7 @@ impl Board {
         }
     }
 
+    // updates piece coordinates for set_piece_coords method
     fn update_piece_coordinates(pieces:&mut [Vec<Piece>; 6], counts:&mut [usize; 5], index:usize, white:bool, rank:i32, file:i32) {
         if counts[index] == 0 {
             let kind = pieces[index][0].kind.clone();
@@ -644,7 +645,7 @@ impl Board {
     // moves a given piece to the specified rank/file
     // eliminates any pieces that exist there, and updates the FEN
     // returns true if move is successfully made
-    pub fn make_move(&mut self, piece:&Piece, rank:i32, file:i32) -> bool {
+    pub fn make_move(&mut self, piece:&mut Piece, rank:i32, file:i32) -> bool {
         // check that given rank/file are in the list of valid moves
         // if not, return false
         let moves = self.get_valid_moves(piece);
@@ -659,18 +660,58 @@ impl Board {
             return false;
         }
         // single out the first field, the position section
-        let mut position_section = &mut fields[0];
-        let mut ranks = position_section.split('/').collect::<Vec<&str>>();
-        
+        let mut ranks = fields[0].split('/').collect::<Vec<&str>>();
 
+        // save these to update 
+        let old_rank = piece.rank;
+        let old_file = piece.file;
         
         // actually make the move here. Don't forget to increment the halfmove and full move counters (fields[4] and fields[5] respectively)
-        
+        piece.rank = rank;
+        piece.file = file;
 
+        // replaces old rank char with 1. numbers still need to be collapsed (i.e. 1,2 needs to be collapsed to 3)
+        let new_rank = &Board::replace_nth_char(ranks[old_rank as usize], (old_file - 1) as usize, '1')[..];
+        ranks[old_rank as usize] = new_rank;
+
+        let new_position = ranks[rank as usize].chars().nth((file - 1) as usize).unwrap();
+
+        if new_position.is_ascii_digit() {
+            let num = new_position.to_digit(10).unwrap();
+            if num > 1 {
+                // needs to split the int into two sides, if the piece isn't moving to the edge of the space the int covers
+            }
+        } else {
+            // capture a piece
+        }
+
+        // also needs to handle promotion
+
+        let new_rank_2 = &Board::replace_nth_char(ranks[rank as usize], (old_file - 1) as usize, '1')[..];
+        ranks[rank as usize] = new_rank_2;
+
+        // this converts the halfmoves to an int, adds 1, parses back to a String, and then using the shorthand &(value)[..] converts to &str
+        let mut halfmoves = &((&mut fields[4]).parse::<i32>().unwrap() + 1).to_string()[..];
+        if piece.kind != PieceType::Pawn {
+            fields[4] = &mut halfmoves;
+        }
+
+        // this converts the fullmoves to an int, adds 1, parses back to a String, and then using the shorthand &(value)[..] converts to &str
+        let mut fullmoves = &((&mut fields[5]).parse::<i32>().unwrap() + 1).to_string()[..];
+        if piece.color != Color::Black {
+            fields[5] = &mut fullmoves;
+        }
+
+        // update "to move" value
+        if piece.color == Color::White {
+            fields[2] = "b";
+        } else {
+            fields[2] = "w";
+        }
     
         // rejoin ranks with '/' delimeter and assign to dereferenced position_section (fields[0])
         let new_position = ranks.join("/");
-        *position_section = new_position.as_str();
+        fields[0] = new_position.as_str();
 
 
         // rejoin FEN fields with a whitespace delimeter
@@ -678,6 +719,11 @@ impl Board {
         self.set_fen(fen);
 
         return true;
+    }
+
+    // utility to replace the nth character in a &str
+    fn replace_nth_char(s:&str, index:usize, newchar:char) -> String {
+        s.chars().enumerate().map(|(i,c)| if i == index { newchar } else { c }).collect()
     }
 
     fn get_side_to_move(&self) -> Color {

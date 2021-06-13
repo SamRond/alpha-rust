@@ -129,7 +129,7 @@ mod tests {
 
         // make move 1. e4
         print!("Checking if pawn move 1. e4 is successful... ");
-        let pawn = &board.get_white_pieces()[0][4];
+        let pawn = &mut board.get_white_pieces()[0][4];
 
         let mv = board.make_move(pawn, 4, 5);
         assert!(mv);
@@ -147,7 +147,7 @@ mod tests {
         print!("Checking if knight move is successful... ");
 
         
-        let knight = &board.get_white_pieces()[1][2];
+        let knight = &mut board.get_white_pieces()[1][2];
 
         let mv = board.make_move(knight, 3, 6);
         assert!(mv);
@@ -168,11 +168,11 @@ mod tests {
         print!("\n\n");
 
         //make moves 1. e4 f5 2. Qh5+
-        let w_pawn = &board.get_white_pieces()[0][4];
+        let w_pawn = &mut board.get_white_pieces()[0][4];
         board.make_move(w_pawn, 4, 5);
-        let b_pawn = &board.get_black_pieces()[0][5];
+        let b_pawn = &mut board.get_black_pieces()[0][5];
         board.make_move(b_pawn, 5, 6);
-        let w_queen = &board.get_white_pieces()[4][0];
+        let w_queen = &mut board.get_white_pieces()[4][0];
         board.make_move(w_queen, 5, 8);
 
         //check if board state includes checks
