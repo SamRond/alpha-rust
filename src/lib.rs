@@ -602,7 +602,7 @@ impl Board {
                     for y in -2..2 {
                         // when x is +/- 1       and y is +/- 2,        OR   x is +/- 2          and y is +/- 1,             and the target square is valid
                         if (((x == 1 || x == -1) && (y == 2 || y == -2)) || ((x == 2 || x == -2) && (y == 1 || y == -1))) && Board::valid_square((piece.rank + x, piece.file + y)) {
-                            let same_team = match self.find_piece_by_coords(piece.rank + x, piece.rank + y) {
+                            let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file + y) {
                                 Some(x) => x.color == piece.color, // when the target square is not occupied by a same-color piece
                                 None => false,
                             };
@@ -611,7 +611,66 @@ impl Board {
                     }
                 }
             },
-            PieceType::Bishop => todo!(),
+            PieceType::Bishop => {
+                let mut quad_one = true;
+                let mut quad_two = true;
+                let mut quad_three = true;
+                let mut quad_four = true;
+                for x in 1..8 {
+                    if quad_one {
+                        if !Board::valid_square((piece.rank + x, piece.file + x)) {
+                            quad_one = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file + x) {
+                                Some(x) => x.color == piece.color,
+                                None => false,
+                            };
+                            if same_team {quad_one = false;}
+                            else {coords.push((piece.rank + x, piece.file + x))}
+                        }
+                    }
+                    if quad_two {
+                        if !Board::valid_square((piece.rank - x, piece.file + x)) {
+                            quad_two = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file + x) {
+                                Some(x) => x.color == piece.color,
+                                None => false,
+                            };
+                            if same_team {quad_two = false;}
+                            else {coords.push((piece.rank - x, piece.file + x))}
+                        }
+                    }
+                    if quad_three {
+                        if !Board::valid_square((piece.rank - x, piece.file - x)) {
+                            quad_three = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file - x) {
+                                Some(x) => x.color == piece.color,
+                                None => false,
+                            };
+                            if same_team {quad_three = false;}
+                            else {coords.push((piece.rank - x, piece.file - x))}
+                        }
+                    }
+                    if quad_four {
+                        if !Board::valid_square((piece.rank + x, piece.file - x)) {
+                            quad_four = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file - x) {
+                                Some(x) => x.color == piece.color,
+                                None => false,
+                            };
+                            if same_team {quad_four = false;}
+                            else {coords.push((piece.rank + x, piece.file - x))}
+                        }
+                    }
+                }
+            },
             PieceType::Rook => todo!(),
             PieceType::Queen => todo!(),
             PieceType::King => todo!(),
