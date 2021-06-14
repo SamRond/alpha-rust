@@ -623,7 +623,12 @@ impl Board {
                         }
                         else {
                             let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file + x) {
-                                Some(x) => x.color == piece.color,
+                                Some(y) => {
+                                    if y.color != piece.color {
+                                        coords.push((piece.rank + x, piece.file + x));
+                                    }
+                                    y.color == piece.color
+                                },
                                 None => false,
                             };
                             if same_team {quad_one = false;}
@@ -636,7 +641,12 @@ impl Board {
                         }
                         else {
                             let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file + x) {
-                                Some(x) => x.color == piece.color,
+                                Some(y) => {
+                                    if y.color != piece.color {
+                                        coords.push((piece.rank - x, piece.file + x));
+                                    }
+                                    y.color == piece.color
+                                },
                                 None => false,
                             };
                             if same_team {quad_two = false;}
@@ -649,7 +659,12 @@ impl Board {
                         }
                         else {
                             let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file - x) {
-                                Some(x) => x.color == piece.color,
+                                Some(y) => {
+                                    if y.color != piece.color {
+                                        coords.push((piece.rank - x, piece.file - x));
+                                    }
+                                    y.color == piece.color
+                                },
                                 None => false,
                             };
                             if same_team {quad_three = false;}
@@ -662,7 +677,12 @@ impl Board {
                         }
                         else {
                             let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file - x) {
-                                Some(x) => x.color == piece.color,
+                                Some(y) => {
+                                    if y.color != piece.color {
+                                        coords.push((piece.rank + x, piece.file - x));
+                                    }
+                                    y.color == piece.color
+                                },
                                 None => false,
                             };
                             if same_team {quad_four = false;}
