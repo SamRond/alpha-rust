@@ -147,14 +147,14 @@ mod tests {
         print!("Checking if knight move is successful... ");
 
         
-        let knight = &mut board.get_white_pieces()[1][2];
+        let knight = &mut board.get_white_pieces()[1][1];
 
         let mv = board.make_move(knight, 3, 6);
         assert!(mv);
 
         let res = board.find_piece_by_coords(3, 6).unwrap();
 
-        assert_eq!(res.get_position(), board.get_white_pieces()[0][4].get_position());
+        assert_eq!(res.get_position(), board.get_white_pieces()[1][1].get_position());
 
         println!("true");
 
