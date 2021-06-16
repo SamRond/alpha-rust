@@ -20,7 +20,7 @@ pub enum PieceType {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum Color {
     White,
     Black
@@ -918,7 +918,7 @@ impl Board {
             },
             PieceType::King => {
                 let castles = self.get_castle_ability(piece.color);
-                if castles[0] {
+                if castles.0 {
                     let square_one = match self.find_piece_by_coords(piece.rank, piece.file + 1) {
                         Some(x) => false,
                         None => true,
@@ -929,7 +929,7 @@ impl Board {
                     };
                     if square_one && square_two {coords.push((piece.rank, piece.file + 2))}
                 }
-                if castles[1] {
+                if castles.1 {
                     let square_one = match self.find_piece_by_coords(piece.rank, piece.file - 1) {
                         Some(x) => false,
                         None => true,
