@@ -598,8 +598,8 @@ impl Board {
                 if Board::valid_square(capture_square_2) && !self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).is_none() && self.find_piece_by_coords(capture_square_2.0, capture_square_2.1).unwrap().color != piece.color { coords.push(capture_square_2); }
             },
             PieceType::Knight => {
-                for x in -2..2 {
-                    for y in -2..2 {
+                for x in -2..3 {
+                    for y in -2..3 {
                         // when x is +/- 1       and y is +/- 2,        OR   x is +/- 2          and y is +/- 1,             and the target square is valid
                         if (((x == 1 || x == -1) && (y == 2 || y == -2)) || ((x == 2 || x == -2) && (y == 1 || y == -1))) && Board::valid_square((piece.rank + x, piece.file + y)) {
                             let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file + y) {
@@ -916,7 +916,49 @@ impl Board {
                     
                 }
             },
-            PieceType::King => todo!(),
+            PieceType::King => {
+                let castles = self.get_castle_ability(piece.color);
+                if castles[0] {
+                    let square_one = match self.find_piece_by_coords(piece.rank, piece.file + 1) {
+                        Some(x) => false,
+                        None => true,
+                    };
+                    let square_two = match self.find_piece_by_coords(piece.rank, piece.file + 2) {
+                        Some(x) => false,
+                        None => true,
+                    };
+                    if square_one && square_two {coords.push((piece.rank, piece.file + 2))}
+                }
+                if castles[1] {
+                    let square_one = match self.find_piece_by_coords(piece.rank, piece.file - 1) {
+                        Some(x) => false,
+                        None => true,
+                    };
+                    let square_two = match self.find_piece_by_coords(piece.rank, piece.file - 2) {
+                        Some(x) => false,
+                        None => true,
+                    };
+                    if square_one && square_two {coords.push((piece.rank, piece.file - 2))}
+                }
+                for i in -1..2 {
+                    for j in -1..2 {
+                        if i != 0 || j != 0 {
+                            let same_team = match self.find_piece_by_coords(piece.rank + i, piece.file + j) {
+                                Some(x) => {
+                                    if x.color == piece.color {
+                                        false
+                                    }
+                                    else {
+                                        true
+                                    }
+                                },
+                                None => true,
+                            };
+                            if same_team {coords.push((piece.rank + i, piece.file + j))}
+                        }
+                    }
+                }
+            },
         }
 
         return coords;
