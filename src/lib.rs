@@ -816,8 +816,38 @@ impl Board {
         }
     }
 
-    fn get_castle_ability(color:Color, ) -> (bool, bool) {
+    fn get_castle_ability(&self, color:Color) -> (bool, bool) {
+        let fields = self.fen.split_whitespace().collect::<Vec<&str>>();
+        let mut king = 'K';
+        let mut queen = 'Q';
+
+        if color == Color::Black {
+            king = 'k';
+            queen = 'q';
+        }
+
+        let castling = fields[2];
         
-        return (true, true);
+        return (castling.contains(king), castling.contains(queen));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_castle_ability() {
+        let mut board = Board::new("".to_string());
+        assert_eq!(board.get_castle_ability(Color::White), (true, true));
+        assert_eq!(board.get_castle_ability(Color::Black), (true, true));
+
+        board.set_fen("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b Kq - 1 2".to_string());
+        assert_eq!(board.get_castle_ability(Color::White), (true, false));
+        assert_eq!(board.get_castle_ability(Color::Black), (false, true));
+
+        board.set_fen("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b - - 1 2".to_string());
+        assert_eq!(board.get_castle_ability(Color::White), (false, false));
+        assert_eq!(board.get_castle_ability(Color::Black), (false, false));
     }
 }
