@@ -919,26 +919,14 @@ impl Board {
             PieceType::King => {
                 let castles = self.get_castle_ability(piece.color);
                 if castles.0 {
-                    let square_one = match self.find_piece_by_coords(piece.rank, piece.file + 1) {
-                        Some(x) => false,
-                        None => true,
-                    };
-                    let square_two = match self.find_piece_by_coords(piece.rank, piece.file + 2) {
-                        Some(x) => false,
-                        None => true,
-                    };
-                    if square_one && square_two {coords.push((piece.rank, piece.file + 2))}
+                    if self.find_piece_by_coords(piece.rank, piece.file + 1).is_none() && self.find_piece_by_coords(piece.rank, piece.file + 2).is_none() {
+                        coords.push((piece.rank, piece.file + 2))
+                    }
                 }
                 if castles.1 {
-                    let square_one = match self.find_piece_by_coords(piece.rank, piece.file - 1) {
-                        Some(x) => false,
-                        None => true,
-                    };
-                    let square_two = match self.find_piece_by_coords(piece.rank, piece.file - 2) {
-                        Some(x) => false,
-                        None => true,
-                    };
-                    if square_one && square_two {coords.push((piece.rank, piece.file - 2))}
+                    if self.find_piece_by_coords(piece.rank, piece.file - 1).is_none() && self.find_piece_by_coords(piece.rank, piece.file - 2).is_none() {
+                        coords.push((piece.rank, piece.file - 2))
+                    }
                 }
                 for i in -1..2 {
                     for j in -1..2 {
