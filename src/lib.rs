@@ -1081,8 +1081,8 @@ impl Board {
         }
     }
 
-    fn get_castle_ability(color:Color, ) -> bool {
+    fn get_castle_ability(color:Color, ) -> (bool, bool) {
         
-        return true;
+        return (true, true);
     }
 }
