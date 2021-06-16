@@ -79,7 +79,7 @@ impl BoardSingleton {
 
     pub fn get_board_string(&self) -> String {
         let mut string = "<table><tbody>".to_string();
-        let mut char = ' ';
+        let mut char:char;
     
         for i in (1..9).rev() {
             string += "<tr>";
