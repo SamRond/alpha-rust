@@ -627,7 +627,7 @@ impl Board {
                                     if y.color != piece.color {
                                         coords.push((piece.rank + x, piece.file + x));
                                     }
-                                    y.color == piece.color
+                                    true
                                 },
                                 None => false,
                             };
@@ -691,8 +691,231 @@ impl Board {
                     }
                 }
             },
-            PieceType::Rook => todo!(),
-            PieceType::Queen => todo!(),
+            PieceType::Rook => {
+                let mut r = true;
+                let mut u = true;
+                let mut l = true;
+                let mut d = true;
+                for x in 1..8 {
+                    if r {
+                        if !Board::valid_square((piece.rank, piece.file + x)) {
+                            r = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank, piece.file + x) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank, piece.file + x));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {r = false;}
+                            else {coords.push((piece.rank, piece.file + x))}
+                        }
+                    }
+                    if u {
+                        if !Board::valid_square((piece.rank, piece.file + x)) {
+                            u = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank + x, piece.file));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {u = false;}
+                            else {coords.push((piece.rank + x, piece.file))}
+                        }
+                    }
+                    if l {
+                        if !Board::valid_square((piece.rank + x, piece.file)) {
+                            l = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank, piece.file - x) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank, piece.file - x));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {l = false;}
+                            else {coords.push((piece.rank, piece.file - x))}
+                        }
+                    }
+                    if d {
+                        if !Board::valid_square((piece.rank - x, piece.file)) {
+                            d = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank - x, piece.file));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {d = false;}
+                            else {coords.push((piece.rank - x, piece.file))}
+                        }
+                    }
+                }
+            },
+            PieceType::Queen => {
+                let mut r = true;
+                let mut u = true;
+                let mut l = true;
+                let mut d = true;
+                let mut quad_one = true;
+                let mut quad_two = true;
+                let mut quad_three = true;
+                let mut quad_four = true;
+                for x in 1..8 {
+                    if r {
+                        if !Board::valid_square((piece.rank, piece.file + x)) {
+                            r = false;
+                            quad_one = false;
+                            quad_four = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank, piece.file + x) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank, piece.file + x));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {r = false;}
+                            else {coords.push((piece.rank, piece.file + x))}
+                        }
+                    }
+                    if u {
+                        if !Board::valid_square((piece.rank, piece.file + x)) {
+                            u = false;
+                            quad_one = false;
+                            quad_two = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank + x, piece.file));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {u = false;}
+                            else {coords.push((piece.rank + x, piece.file))}
+                        }
+                    }
+                    if l {
+                        if !Board::valid_square((piece.rank + x, piece.file)) {
+                            l = false;
+                            quad_two = false;
+                            quad_three = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank, piece.file - x) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank, piece.file - x));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {l = false;}
+                            else {coords.push((piece.rank, piece.file - x))}
+                        }
+                    }
+                    if d {
+                        if !Board::valid_square((piece.rank - x, piece.file)) {
+                            d = false;
+                            quad_three = false;
+                            quad_four = false;
+                        }
+                        else {
+                            let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file) {
+                                Some(y) => {
+                                    if y.color == piece.color {
+                                        coords.push((piece.rank - x, piece.file));
+                                    }
+                                    y.color == piece.color
+                                },
+                                None => false,
+                            };
+                            if same_team {d = false;}
+                            else {coords.push((piece.rank - x, piece.file))}
+                        }
+                    }
+                    if quad_one {
+                        let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file + x) {
+                            Some(y) => {
+                                if y.color != piece.color {
+                                    coords.push((piece.rank + x, piece.file + x));
+                                }
+                                true
+                            },
+                            None => false,
+                        };
+                        if same_team {quad_one = false;}
+                        else {coords.push((piece.rank + x, piece.file + x))}
+                    }
+                    if quad_two {
+                        let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file + x) {
+                            Some(y) => {
+                                if y.color != piece.color {
+                                    coords.push((piece.rank - x, piece.file + x));
+                                }
+                                y.color == piece.color
+                            },
+                            None => false,
+                        };
+                        if same_team {quad_two = false;}
+                        else {coords.push((piece.rank - x, piece.file + x))}
+                    }
+                    if quad_three {
+                        let same_team = match self.find_piece_by_coords(piece.rank - x, piece.file - x) {
+                            Some(y) => {
+                                if y.color != piece.color {
+                                    coords.push((piece.rank - x, piece.file - x));
+                                }
+                                y.color == piece.color
+                            },
+                            None => false,
+                        };
+                        if same_team {quad_three = false;}
+                        else {coords.push((piece.rank - x, piece.file - x))}
+                    }
+                    if quad_four {
+                        let same_team = match self.find_piece_by_coords(piece.rank + x, piece.file - x) {
+                            Some(y) => {
+                                if y.color != piece.color {
+                                    coords.push((piece.rank + x, piece.file - x));
+                                }
+                                y.color == piece.color
+                            },
+                            None => false,
+                        };
+                        if same_team {quad_four = false;}
+                        else {coords.push((piece.rank + x, piece.file - x))}
+                    }
+                    
+                }
+            },
             PieceType::King => todo!(),
         }
 
