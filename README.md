@@ -1,3 +1,6 @@
+# Alpha-Rust
+This is a first attempt at developing a chess engine in Rust with [@cjr0265](https://www.github.com/cjr0265), with the intent to learn both Rust, WASM, and the development of chess engines. What follows is some basic information on the template on which the project is built.
+
 ## Important Commands
 
 ### Run Tests (one at a time)
